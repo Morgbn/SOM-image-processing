@@ -15,7 +15,7 @@ int main(int argc, char const *argv[]) {
 
 
  #if GNUPLOT
-  if (lenx != 2) usage("gnuplotGrid: 2D seulement (3D implémenté)!");
+  if (lenx != 2) usage("gnuplotGrid: 2D seulement (3D non implémenté)!");
   FILE * gnuplot = gnuplotInit();
  #endif
 

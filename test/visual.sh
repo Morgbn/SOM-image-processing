@@ -1,7 +1,6 @@
-gcc som.c -o cx -lm
-
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 for (( i = 0; i < $1; i++ )); do
-  python genNum.py 200 2 > inPoints.txt
-  cx 'inPoints.txt'
-  python visual.py
+  python $DIR/genNum.py 200 2 > inPoints.txt
+  bin/runner 'inPoints.txt'
+  python $DIR/visual.py
 done

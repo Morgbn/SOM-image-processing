@@ -1,4 +1,4 @@
-gcc som.c -o cx -lm
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo draw$1.png
-python img-to-points.py draw$1.png > draw.txt
-cx 'draw.txt'
+python $DIR/img-to-points.py $DIR/draw$1.png > draw.txt
+bin/runner 'draw.txt'
