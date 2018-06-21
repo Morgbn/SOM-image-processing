@@ -4,7 +4,7 @@ int main(int argc, char const *argv[]) {
   srand(time(NULL)); // initialise rand
 
   int nx = 0;   // nombres de capteurs
-  int nw = 3*3;   // nombres de neurones
+  int nw = 5*5;   // nombres de neurones
   int lenx = 0; // taille des capteurs
 
   if (argc < 2) usage("need a filename");

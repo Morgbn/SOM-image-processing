@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-if len(sys.argv) < 2: print "I need a filename"; exit(1)
+if len(sys.argv) < 2: print "img-to-points.py [filename]"; exit(1)
 
 import Image
 import numpy as np

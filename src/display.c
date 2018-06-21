@@ -41,7 +41,7 @@ FILE * gnuplotInit() {
 }
 
 void gnuplotGrid(FILE * gnuplot, float ** w, int nw, float ** allx, int nx) {
-  fprintf(gnuplot, "plot [-.01:1.1][-.01:1.1] '-' with p pt 5 lt rgb \"red\", '-' with lines lt rgb \"green\"\n");
+  fprintf(gnuplot, "plot '-' with p pt 5 lt rgb \"red\", '-' with lines lt rgb \"green\"\n");
   // Points
   for (int i = 0; i < nx; i++)
     fprintf(gnuplot, "%g %g\n", allx[i][0], allx[i][1]);

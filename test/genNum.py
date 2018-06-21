@@ -56,4 +56,4 @@ if len(sys.argv) >= 4:
     max = int(sys.argv[4])
 if len(sys.argv) > 2:
     genRandomNum(int(sys.argv[1]), int(sys.argv[2]))
-else: genRandomNum(15, 2)
+else: print "genNum.py [Nombre de points] [Dimension]"

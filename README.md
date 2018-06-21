@@ -11,7 +11,13 @@ make
 ### Exécution du programme
 
 ```
-python test/genNum.py [Nombre de points] [Dimension] > inPoints.txt
+python test/genNum.py 200 2 > inPoints.txt
+bin/runner inPoints.txt
+```
+ou
+
+```
+python test/img-to-points.py test/draw1.png > inPoints.txt
 bin/runner inPoints.txt
 ```
 
