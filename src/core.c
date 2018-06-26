@@ -1,22 +1,99 @@
 #include "core.h"
 
-float ** getPoints(char * filename, int * lenx, int *nx, int * width, int * height) {
-  png_bytep *rowImg = readPngFile(filename, width, height);
-  *nx = (*width) * (*height);
+float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int height) {
+  *nx = width * height;
   *lenx = 4; // R,G,B,A
 
   float ** cells = create2Darray(*nx, *lenx);
 
   int j = 0;
-  for(int y = 0; y < *height; y++) {
+  for(int y = 0; y < height; y++) {
     png_bytep row = rowImg[y];
-    for(int x = 0; x < *width; x++) {
+    for(int x = 0; x < width; x++) {
       png_bytep px = &(row[x * 4]); // un pixel = [R,G,B,A]
       for (int i = 0; i < *lenx; i++) cells[j][i] = px[i];
       j++;
     }
   }
   return cells;
+}
+
+float ** som(float ** allx, int lenx, int nx, int nw) {
+  // Normalisation de tous les vecteurs x de données
+  normalizeAll(allx, nx, lenx);
+
+  float * av = vectorAverage(allx, lenx, nx); // calcule la moyenne
+  float ** w = create2Darray(nw, lenx);
+
+ // connexions montantes wij aléatoires et non ordonnées
+  for (size_t i = 0; i < nw; i++) {
+    for (size_t j = 0; j < lenx; j++) {
+      float min = (av[j]-.3 > 0) ? av[j]-.3 : 0;
+      float max = (av[j]+.3 < 1) ? av[j]+.3 : 1;
+      w[i][j] = randomFloat(min, max); // intervalle autour de la moyenne
+    }
+  }
+
+  float N0 = nw/2;    // rayon initiale = 50% des neurones
+  float NhdSize = N0;
+  float a0 = .95;      // coefficient initiale d'apprentissage
+  float coefA = a0;
+  // int Nit = nx * 500; // nombre d'itérations
+  int Nit = nx; // nombre d'itérations
+
+  // phase 1
+  int T = Nit;
+  int t2 = 0; // pr la phase 2
+  for (size_t t = 0; t < T; t++) {
+    // shuffleVects(allx, nx); // mélanger les vecteurs
+    // for (size_t k = 0; k < nx; k++) {
+      // float * x = allx[k];
+    float * x = allx[t % nx];
+    // float * x = allx[randomInt(0, nx)];
+
+    // calcule de distance pour trouver le J*
+    int bmuIndex = findBmuIndex(w, x, lenx, nw);
+
+    // apprentissage
+   #if NOGRID  // utiliser le rayon pour trouver les voisins
+    for (size_t i = 0; i < nw; i++) { // pour chaque neurones
+      float d = distEucl(w[i], w[bmuIndex], lenx); // distance j j*
+      float hij = h(d, coefA, NhdSize); // func de voisinage
+      if (d < NhdSize) {
+        for (size_t j = 0; j < lenx; j++) { // apprentissage
+          w[i][j] += coefA * hij * (x[j] - w[i][j]);
+        }
+      }
+    }
+   #else       // voisins selon une grille
+    int lenv;                                           // nombre de voisins
+    float ** nei = getNei(w, bmuIndex, ceil(NhdSize), nw, lenx, &lenv); // voisins
+    for (size_t i = 0; i < lenv; i++) {
+      float d   = distEucl(nei[i], w[bmuIndex], lenx);  // distance j j*
+      float hij = h(d, coefA, NhdSize);                 // func de voisinage
+      for (size_t j = 0; j < lenx; j++) {               // apprentissage
+        nei[i][j] += coefA * hij * (x[j] - nei[i][j]);
+      }
+    }
+   #endif
+
+    decreaseA(&coefA, a0, t-t2, T);
+    decreaseNhdSize(&NhdSize, N0, t, T);
+
+    // }
+    if (t == Nit/5) { // phase 2
+      a0 = coefA = .1;
+      printf("PHASE 2 %f\n", coefA);
+      t2 = t;
+    }
+  }
+
+  for (int i = 0; i < nw; i++)
+    for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
+
+  print2Darray("%g", w, lenx, nw);
+  printf("FIN (%i iterations): a = %g; NhdSize = %g\n", Nit, coefA, NhdSize);
+  return w;
 }
 
 void decreaseA(float * a, float a0, int t, int T) {
@@ -43,7 +120,7 @@ int findBmuIndex(float ** w, float * x, int lenx, int lenw) {
 
     if (dist <= jdist || jdist < 0) {     // nouveau déclenchement
       if (dist == jdist &&                // déclenchement multiples
-         randomInt(0, ++nbmu)) continue;  // -> sélection aléatoire
+        randomInt(0, ++nbmu)) continue;  // -> sélection aléatoire
       if (dist < jdist)                   // nouveau déclenchement
         nbmu = 1;                         // -> remet à 1
       jdist = dist;
@@ -53,8 +130,8 @@ int findBmuIndex(float ** w, float * x, int lenx, int lenw) {
   return bmuIndex;
 }
 
-float ** getNei(float ** w, int n, int r, int N, int lenx, int * l) {
-  int width = sqrt(N);
+float ** getNei(float ** w, int bmuIndex, int r, int nw, int lenx, int * l) {
+  /*int width = sqrt(N);
   int x = n % width;                                    // index vers coordonnées
   int y = n / width;
 
@@ -73,7 +150,17 @@ float ** getNei(float ** w, int n, int r, int N, int lenx, int * l) {
   }
   for (size_t i = len+1; i < lenx; i++) free(nei[i]);   // libére espace non utilisé
 
-  *l = len; // nombre de voisins
+  *l = len; // nombre de voisins*/
+
+  float ** nei = create2Darray(2*r, lenx);              // allocation pr voisins
+  int nNei = -1;                                        // nb de voisins
+  for (int i = -r; i <= r; i++) {
+    if (!i) continue;                                   // le bmu (l'exclure de la liste)
+    if (bmuIndex + i < 0 || bmuIndex + i > nw) continue;
+    nei[++nNei] = w[bmuIndex + i];
+  }
+  for (size_t i = nNei+1; i < 2*r; i++) free(nei[i]);   // libére espace non utilisé
+  *l = nNei;                                            // nombre de voisins
   return nei;
 }
 

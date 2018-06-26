@@ -4,17 +4,30 @@
 #include "utilities.h"
 #include "randomize.h"
 #include "readpng.h"
+#include "display.h"
+
+#define NOGRID  01
 
 /**
  * Récupérer les vecteurs de caractéristiques dans un ficher
- * @param  filename nom du fichier
+ * @param  rowImg   image
  * @param  nx       taille du vecteur retourné
  * @param  lenx     taille des vecteurs du vecteur
  * @param  width    largeur image
  * @param  height   hauteur image
  * @return          vecteur de vecteurs
  */
-float ** getPoints(char * filename, int * lenx, int *nx, int * width, int * height);
+float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int height);
+
+/**
+ * Algo SOM
+ * @param  allx vecteurs d'entrée
+ * @param  lenx taille d'un vecteur
+ * @param  nx   nombre de capteurs
+ * @param  nw   nombre de neurone
+ * @return      vecteur de neurone
+ */
+float ** som(float ** allx, int lenx, int nx, int nw);
 
 /**
  * Décroitre le coefficient d'apprentissage
@@ -55,15 +68,15 @@ int findBmuIndex(float ** w, float * x, int lenx, int lenw);
 
 /**
  * Renvoie les voisins d'un neurone
- * @param  w vecteurs de neurones
- * @param  n nième neurone
- * @param  r rayon
- * @param  N nombre de neurones
- * @param  lenx taille d'un neurone
- * @param  l nombre de voisins
- * @return   voisins du neurone
+ * @param  w        vecteurs de neurones
+ * @param  bmuIndex nième neurone
+ * @param  r        rayon
+ * @param  nw       nombre de neurones
+ * @param  lenx     taille d'un neurone
+ * @param  l        nombre de voisins
+ * @return          voisins du neurone
  */
-float ** getNei(float ** w, int n, int r, int N, int lenx, int * l);
+float ** getNei(float ** w, int bmuIndex, int r, int nw, int lenx, int * l);
 
 /**
  * Normaliser ts les vecteurs d'un vecteur
