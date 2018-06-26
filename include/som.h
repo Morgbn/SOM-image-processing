@@ -4,5 +4,5 @@
 #include "randomize.h"
 #include "utilities.h"
 
-#define NOGRID  0
-#define GNUPLOT 01
+#define NOGRID  01
+#define GNUPLOT 0

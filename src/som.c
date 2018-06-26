@@ -3,16 +3,17 @@
 int main(int argc, char const *argv[]) {
   srand(time(NULL)); // initialise rand
 
+  int width, height;
   int nx = 0;   // nombres de capteurs
-  int nw = 5*5;   // nombres de neurones
+  int nw = 2*2;   // nombres de neurones
   int lenx = 0; // taille des capteurs
 
   if (argc < 2) usage("need a filename");
-  float ** allx = getPoints((char *) argv[1], &nx, &lenx);
+  // float ** allx = getPoints((char *) argv[1], &nx, &lenx);
+  float ** allx = getPoints((char *) argv[1], &lenx, &nx, &width, &height);
 
   // Normalisation de tous les vecteurs x de données
   normalizeAll(allx, nx, lenx);
-
 
  #if GNUPLOT
   if (lenx != 2) usage("gnuplotGrid: 2D seulement (3D non implémenté)!");
@@ -21,6 +22,7 @@ int main(int argc, char const *argv[]) {
 
   float * av = vectorAverage(allx, lenx, nx); // calcule la moyenne
   float ** w = create2Darray(nw, lenx);
+
 
  #if NOGRID  // pas de grille : connexions montantes wij aléatoires et non ordonnées
   for (size_t i = 0; i < nw; i++) {
@@ -112,10 +114,14 @@ int main(int argc, char const *argv[]) {
      }
     #endif
   }
+
+  for (int i = 0; i < nw; i++)
+    for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
+
   print2Darray("%g", w, lenx, nw);
   printf("FIN (%i iterations): a = %g; NhdSize = %g\n", Nit, coefA, NhdSize);
 
-  write2Darray("normalized.txt", allx, lenx, nx);
-  write2Darray("data.txt", w, lenx, nw);
+  // write2Darray("normalized.txt", allx, lenx, nx);
+  // write2Darray("data.txt", w, lenx, nw);
   return 0;
 }

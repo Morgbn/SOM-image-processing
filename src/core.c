@@ -1,32 +1,21 @@
 #include "core.h"
 
-float ** getPoints(char * filename, int * nx, int * lenx) {
-  FILE * fp;
-  char * l = NULL;
-  size_t len = 0;
+float ** getPoints(char * filename, int * lenx, int *nx, int * width, int * height) {
+  png_bytep *rowImg = readPngFile(filename, width, height);
+  *nx = (*width) * (*height);
+  *lenx = 4; // R,G,B,A
 
-  if ((fp = fopen(filename, "r")) == NULL)
-    usage("getPoints : error reading the file");
+  float ** cells = create2Darray(*nx, *lenx);
 
-  if ((getline(&l, &len, fp)) == -1) // lire la 1er ligne
-    usage("getPoints : bad file");   // erreur
-
-  int rows = 0, cols = 0;
-  sscanf(l, "ROWS %d\tCOLS %d", &rows, &cols); // récupére les tailles
-  *nx = rows;
-  *lenx = cols;
-
-  float ** cells = create2Darray(rows, cols);
-
-  // lire les données
-  int i = 0, j;
-  while ((getline(&l, &len, fp)) != -1) {
-    char * token; j = 0;
-    for (token = strtok(l, "\t"); token != NULL; token = strtok(NULL, "\t"))
-      cells[i][j++] = atof(token);
-    i++;
+  int j = 0;
+  for(int y = 0; y < *height; y++) {
+    png_bytep row = rowImg[y];
+    for(int x = 0; x < *width; x++) {
+      png_bytep px = &(row[x * 4]); // un pixel = [R,G,B,A]
+      for (int i = 0; i < *lenx; i++) cells[j][i] = px[i];
+      j++;
+    }
   }
-
   return cells;
 }
 
@@ -89,19 +78,7 @@ float ** getNei(float ** w, int n, int r, int N, int lenx, int * l) {
 }
 
 void normalizeAll(float **w, int lenw, int lenx) {
-  // trouver le min et le max des vecteurs
-  float max, min;
-  for (size_t i = 0; i < lenw; i++) {
-    for (size_t j = 0; j < lenx; j++) {
-      if (w[i][j] > max || (!i && !j)) max = w[i][j];
-      if (w[i][j] < min || (!i && !j)) min = w[i][j];
-    }
-  }
-
-  for (size_t i = 0; i < lenw; i++) {
-    for (size_t j = 0; j < lenx; j++) {
-      w[i][j] -= min; // enlever à chaque le min
-      w[i][j] /= max; // et le diviser par le maxNei
-    }
-  }
+  for (size_t i = 0; i < lenw; i++)
+    for (size_t j = 0; j < lenx; j++)
+      w[i][j] /= 255; // et le diviser par le maximum
 }

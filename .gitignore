@@ -1,5 +1,6 @@
 # Ignore file generated
 *.txt
+*.png
 
 # Ignore the build and lib dirs
 build
@@ -10,3 +11,6 @@ bin/*
 
 # Ignore Mac specific files
 .DS_Store
+
+# Pr le moment
+test/*

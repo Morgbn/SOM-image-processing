@@ -3,15 +3,18 @@
 
 #include "utilities.h"
 #include "randomize.h"
+#include "readpng.h"
 
 /**
  * Récupérer les vecteurs de caractéristiques dans un ficher
  * @param  filename nom du fichier
  * @param  nx       taille du vecteur retourné
  * @param  lenx     taille des vecteurs du vecteur
+ * @param  width    largeur image
+ * @param  height   hauteur image
  * @return          vecteur de vecteurs
  */
-float ** getPoints(char * filename, int * nx, int * lenx);
+float ** getPoints(char * filename, int * lenx, int *nx, int * width, int * height);
 
 /**
  * Décroitre le coefficient d'apprentissage
