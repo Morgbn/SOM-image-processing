@@ -7,6 +7,19 @@
 #include <string.h>
 
 /**
+ * rgba vers hsv
+ * @param rgb
+ */
+void rgb2hsv(float *rgb);
+
+/**
+ * hsv rgba
+ * adapté de https://gist.github.com/mjackson/5311256
+ * @param hsv
+ */
+void hsv2rgb(float *hsv);
+
+/**
  * Calcule la distance euclidienne entre 2 vecteurs
  * @param  x   vecteur
  * @param  y   vecteur
@@ -19,10 +32,10 @@ float distEucl(float * x, float * y, int len);
  * Calcule la moyenne des composantes des vecteurs
  * @param  w      vecteur de vecteurs
  * @param  lenx   taille des vecteurs de w
- * @param  lenw   taille de w
+ * @param  nx     taille de w
  * @return        vecteur moyenne
  */
-float * vectorAverage(float ** w, int lenx, int lenw);
+float * vectorAverage(float ** w, int lenx, int nx);
 
 /**
  * Créer un vecteur de vecteurs de flottants

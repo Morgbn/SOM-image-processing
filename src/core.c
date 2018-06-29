@@ -2,7 +2,7 @@
 
 float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int height) {
   *nx = width * height;
-  *lenx = 4; // R,G,B,A
+  *lenx = 3; // R,G,B,(A)
 
   float ** cells = create2Darray(*nx, *lenx);
 
@@ -89,7 +89,11 @@ float ** som(float ** allx, int lenx, int nx, int nw) {
   }
 
   for (int i = 0; i < nw; i++)
-    for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
+    #if HSV
+      w[i][0] = floor(w[i][0] * 360);
+    #else
+      for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
+    #endif
 
   print2Darray("%g", w, lenx, nw);
   printf("FIN (%i iterations): a = %g; NhdSize = %g\n", Nit, coefA, NhdSize);
@@ -165,7 +169,11 @@ float ** getNei(float ** w, int bmuIndex, int r, int nw, int lenx, int * l) {
 }
 
 void normalizeAll(float **w, int lenw, int lenx) {
-  for (size_t i = 0; i < lenw; i++)
-    for (size_t j = 0; j < lenx; j++)
-      w[i][j] /= 255; // et le diviser par le maximum
+  for (size_t i = 0; i < lenw; i++) {
+   #if HSV
+    w[i][0] /= 360;
+   #else
+    for (size_t j = 0; j < lenx; j++) w[i][j] /= 255; // et le diviser par le maximum
+   #endif
+  }
 }
