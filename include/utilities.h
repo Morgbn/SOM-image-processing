@@ -14,10 +14,30 @@ void rgb2hsv(float *rgb);
 
 /**
  * hsv rgba
- * adapté de https://gist.github.com/mjackson/5311256
+ * adapté de https://stackoverflow.com/a/6930407
  * @param hsv
  */
 void hsv2rgb(float *hsv);
+
+/**
+ * rgba vers hsl
+ * adapté de https://gist.github.com/mjackson/5311256
+ * @param rgb
+ */
+void rgb2hsl(float *rgb);
+
+/**
+ * hue ver rgb
+ * https://www.programmingalgorithms.com/algorithm/hsl-to-rgb?lang=C
+ */
+float hue2rgb(float v1, float v2, float vH);
+
+/**
+ * hsl rgba
+ * adapté de https://gist.github.com/mjackson/5311256
+ * @param hsl
+ */
+void hsl2rgb(float *hsl);
 
 /**
  * Calcule la distance euclidienne entre 2 vecteurs

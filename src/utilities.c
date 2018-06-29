@@ -26,7 +26,6 @@ void rgb2hsv(float *rgb) {
 }
 
 void hsv2rgb(float *hsv) {
-
   if (hsv[1] <= 0) {
     hsv[0] = hsv[1] = hsv[2];
     return;
@@ -52,6 +51,57 @@ void hsv2rgb(float *hsv) {
   }
 
   hsv[0] = R*255; hsv[1] = G*255; hsv[2] = B*255;
+}
+
+void rgb2hsl(float *rgb) {
+  float r = rgb[0]/255, g = rgb[1]/255, b = rgb[2]/255;
+
+  float min = fminf(r, fminf(g, b));
+  float max = fmaxf(r, fmaxf(g, b));
+  float h, s, l = (max + min) / 2;
+
+  float d = max - min;
+  if (d < 0.00001) { // noir/gris/blanc
+    h = s = 0;
+  } else {
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    if (max == r) h = (g - b) / d + (g < b ? 6 : 0);
+    else if (max == g) h = (b - r) / d + 2;
+    else if (max == b) h = (r - g) / d + 4;
+    h /= 6;
+  }
+
+   rgb[0] = h*360; rgb[1] = s; rgb[2] = l;
+}
+
+float hue2rgb(float v1, float v2, float vH) {
+	if (vH < 0) vH += 1;
+	if (vH > 1) vH -= 1;
+	if ((6 * vH) < 1) return (v1 + (v2 - v1) * 6 * vH);
+	if ((2 * vH) < 1) return v2;
+	if ((3 * vH) < 2) return (v1 + (v2 - v1) * ((2.0f / 3) - vH) * 6);
+	return v1;
+}
+
+void hsl2rgb(float *hsl) {
+  float h = hsl[0], s = hsl[1], l = hsl[2];
+  float r, g, b;
+
+  if (s == 0) {
+    r = g = b = l * 255; // achromatic
+  } else {
+    float v1, v2;
+		float hue = h / 360;
+
+		v2 = (l < 0.5) ? (l * (1 + s)) : ((l + s) - (l * s));
+		v1 = 2 * l - v2;
+
+		r = hue2rgb(v1, v2, hue + (1.0f / 3));
+		g = hue2rgb(v1, v2, hue);
+		b = hue2rgb(v1, v2, hue - (1.0f / 3));
+  }
+  hsl[0] = r*255; hsl[1] = g*255; hsl[2] = b*255;
 }
 
 float distEucl(float * x, float * y, int len) {

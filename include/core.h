@@ -7,7 +7,8 @@
 #include "display.h"
 
 #define NOGRID  01
-#define HSV  01
+#define HSV  0
+#define HSL  01
 
 /**
  * Récupérer les vecteurs de caractéristiques dans un ficher

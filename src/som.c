@@ -15,7 +15,9 @@ int main(int argc, char const *argv[]) {
 
   #if HSV
     for (int i = 0; i < nx; i++) rgb2hsv(allx[i]);
-    lenx = 3;
+  #endif
+  #if HSL
+    for (int i = 0; i < nx; i++) rgb2hsl(allx[i]);
   #endif
 
   float ** w = som(allx, lenx, nx, nw);
@@ -24,6 +26,12 @@ int main(int argc, char const *argv[]) {
     for (int i = 0; i < nx; i++) hsv2rgb(allx[i]);
     for (int i = 0; i < nw; i++) hsv2rgb(w[i]);
   #endif
+  #if HSL
+    for (int i = 0; i < nx; i++) hsl2rgb(allx[i]);
+    for (int i = 0; i < nw; i++) hsl2rgb(w[i]);
+  #endif
+
+  printf("W = "); print2Darray("%g", w, lenx, nw);
 
   for(int y = 0; y < height; y++) {
     png_bytep row = rowImg[y];
