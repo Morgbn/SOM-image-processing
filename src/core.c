@@ -89,7 +89,7 @@ float ** som(float ** allx, int lenx, int nx, int nw) {
   }
 
   for (int i = 0; i < nw; i++)
-    #if HSV || HSL
+    #if HSV || HSL || HSVL
       w[i][0] = floor(w[i][0] * 360);
     #else
       for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
@@ -171,6 +171,8 @@ void normalizeAll(float **w, int lenw, int lenx) {
   for (size_t i = 0; i < lenw; i++) {
    #if HSV || HSL
     w[i][0] /= 360;
+   #elif HSVL
+    w[i][0] /= 360; w[i][4] /= 255;
    #else
     for (size_t j = 0; j < lenx; j++) w[i][j] /= 255; // et le diviser par le maximum
    #endif

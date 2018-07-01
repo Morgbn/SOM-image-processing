@@ -8,7 +8,9 @@
 
 #define NOGRID  01
 #define HSV  0
-#define HSL  01
+#define HSL  0
+#define HSVRGB 0
+#define HSVL 01
 
 /**
  * Récupérer les vecteurs de caractéristiques dans un ficher
