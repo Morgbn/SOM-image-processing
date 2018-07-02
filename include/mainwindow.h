@@ -7,6 +7,7 @@
 #include <QGraphicsScene>
 #include <QFileInfo>
 #include <QProgressBar>
+#include <QDesktopWidget>
 
 namespace Ui {
 class MainWindow;
