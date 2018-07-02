@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QGraphicsScene>
 #include <QFileInfo>
+#include <QProgressBar>
 
 namespace Ui {
 class MainWindow;

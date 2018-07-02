@@ -5,12 +5,13 @@
 #include "include/randomize.h"
 #include "include/readpng.h"
 #include "include/display.h"
+#include "include/mainwindow.h"
 
 #define NOGRID  01
-#define HSV  0
-#define HSL  0
-#define HSVRGB 0
-#define HSVL 01
+#define MY_HSV  0
+#define MY_HSL  0
+#define MY_HSVRGB 0
+#define MY_HSVL 0
 
 #define HBIN 0 // h binaire ?
 
@@ -27,14 +28,15 @@ float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int heigh
 
 /**
  * Algo SOM
- * @param  allx     vecteurs d'entrée
- * @param  lenx     taille d'un vecteur
- * @param  nx       nombre de capteurs
- * @param  nw       nombre de neurone
+ * @param  allx         vecteurs d'entrée
+ * @param  lenx         taille d'un vecteur
+ * @param  nx           nombre de capteurs
+ * @param  nw           nombre de neurone
+ * @param  progressBar  bar de progression
  * @param  verbose
- * @return          vecteur de neurone
+ * @return              vecteur de neurone
  */
-float ** som(float ** allx, int lenx, int nx, int nw, int verbose);
+float ** som(float ** allx, int lenx, int nx, int nw, QProgressBar *progressBar, int verbose);
 
 /**
  * Décroitre le coefficient d'apprentissage

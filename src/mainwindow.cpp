@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->progressBar->hide(); // par défaut cacher la bar de progression
     // mise en place de la scène ou afficher l'image
     scene = new QGraphicsScene(this);
     scene2 = new QGraphicsScene(this);
@@ -51,7 +52,9 @@ void MainWindow::on_pushButton_clicked()
         QMessageBox::information(this,"Image Edition","File doesn't exist!");
         return;
     }
-    int error = editImg(fileToOpen, "/tmp/somOut.png", 0);
+    ui->progressBar->show();
+    int error = editImg(fileToOpen, "/tmp/somOut.png", ui->progressBar, 0);
+    ui->progressBar->hide();
     if (error) // erreur lors du traitement de l'image
     {
         QMessageBox::information(this,"Image Edition","Error while processing the image!");

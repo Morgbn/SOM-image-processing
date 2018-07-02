@@ -18,7 +18,7 @@ float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int heigh
   return cells;
 }
 
-float ** som(float ** allx, int lenx, int nx, int nw, int verbose) {
+float ** som(float ** allx, int lenx, int nx, int nw, QProgressBar *progressBar, int verbose) {
   // Normalisation de tous les vecteurs x de données
   normalizeAll(allx, nx, lenx);
 
@@ -44,6 +44,10 @@ float ** som(float ** allx, int lenx, int nx, int nw, int verbose) {
   // phase 1
   int T = Nit;
   int t2 = 0; // pr la phase 2
+  if (progressBar) {
+    progressBar->setMinimum(0);
+    progressBar->setMaximum(T);
+  }
   for (int t = 0; t < T; t++) {
     // shuffleVects(allx, nx); // mélanger les vecteurs
     // for (int k = 0; k < nx; k++) {
@@ -86,10 +90,12 @@ float ** som(float ** allx, int lenx, int nx, int nw, int verbose) {
       if (verbose) printf("PHASE 2 %f\n", coefA);
       t2 = t;
     }
+    
+    if (progressBar) progressBar->setValue(t);
   }
 
   for (int i = 0; i < nw; i++)
-    #if HSV || HSL || HSVL
+    #if MY_HSV || MY_HSL || MY_HSVL
       w[i][0] = floor(w[i][0] * 360);
     #else
       for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
@@ -171,9 +177,9 @@ float ** getNei(float ** w, int bmuIndex, int r, int nw, int lenx, int * l) {
 
 void normalizeAll(float **w, int lenw, int lenx) {
   for (int i = 0; i < lenw; i++) {
-   #if HSV || HSL
+   #if MY_HSV || MY_HSL
     w[i][0] /= 360;
-   #elif HSVL
+   #elif MY_HSVL
     w[i][0] /= 360; w[i][4] /= 255;
    #else
     for (int j = 0; j < lenx; j++) w[i][j] /= 255; // et le diviser par le maximum

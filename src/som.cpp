@@ -1,6 +1,6 @@
 #include "include/som.h"
 
-int editImg(const char * fin, const char * fout, int verbose) {
+int editImg(const char * fin, const char * fout, QProgressBar *progressBar, int verbose) {
   srand(time(NULL)); // initialise rand
 
   int width, height;
@@ -12,13 +12,13 @@ int editImg(const char * fin, const char * fout, int verbose) {
   if (rowImg == NULL) return 1;
   float ** allx = getPoints(rowImg, &lenx, &nx, width, height);
 
-  #if HSV
+  #if MY_HSV
     for (int i = 0; i < nx; i++) rgb2hsv(allx[i]);
   #endif
-  #if HSL
+  #if MY_HSL
     for (int i = 0; i < nx; i++) rgb2hsl(allx[i]);
   #endif
-  #if HSVRGB
+  #if MY_HSVRGB
     lenx = 6;
     float ** newx = create2Darray(nx, lenx);
     for (int i = 0; i < nx; i++)
@@ -31,7 +31,7 @@ int editImg(const char * fin, const char * fout, int verbose) {
     free(allx);
     allx = newx;
   #endif
-  #if HSVL
+  #if MY_HSVL
     lenx = 4;
     float ** newx = create2Darray(nx, lenx);
     for (int i = 0; i < nx; i++)
@@ -45,13 +45,13 @@ int editImg(const char * fin, const char * fout, int verbose) {
     allx = newx;
   #endif
 
-  float ** w = som(allx, lenx, nx, nw, verbose);
+  float ** w = som(allx, lenx, nx, nw, progressBar, verbose);
 
-  #if HSV || HSVL
+  #if MY_HSV || MY_HSVL
     for (int i = 0; i < nx; i++) hsv2rgb(allx[i]);
     for (int i = 0; i < nw; i++) hsv2rgb(w[i]);
   #endif
-  #if HSL
+  #if MY_HSL
     for (int i = 0; i < nx; i++) hsl2rgb(allx[i]);
     for (int i = 0; i < nw; i++) hsl2rgb(w[i]);
   #endif
