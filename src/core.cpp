@@ -116,7 +116,7 @@ float h(float dist, float a, int NhdSize) {
 }
 
 int findBmuIndex(float ** w, float * x, int lenx, int lenw) {
-  int bmuIndex;
+  int bmuIndex = 0;
   int nbmu = 1;                           // nb de déclenchements
   float jdist = -1;
 

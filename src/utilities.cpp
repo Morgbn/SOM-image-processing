@@ -31,7 +31,7 @@ void hsv2rgb(float *hsv) {
     return;
   }
 
-  float R,G,B, hh, f, v, p, q, t;
+  float R=0,G=0,B=0, hh, f, v, p, q, t;
   hh = (hsv[0] >= 360.0) ? 0.0: hsv[0];
   hh /= 60.0;
   long i = (long) hh;
@@ -58,7 +58,7 @@ void rgb2hsl(float *rgb) {
 
   float min = fminf(r, fminf(g, b));
   float max = fmaxf(r, fmaxf(g, b));
-  float h, s, l = (max + min) / 2;
+  float h=0, s, l = (max + min) / 2;
 
   float d = max - min;
   if (d < 0.00001) { // noir/gris/blanc
