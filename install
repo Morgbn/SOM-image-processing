@@ -1,0 +1,12 @@
+#!/bin/sh
+
+
+if test "$1" = "clean"
+then
+  rm -rf build/ runner
+else
+  qmake *.pro
+  make
+  ln -s build/runner
+  echo 'Done'
+fi

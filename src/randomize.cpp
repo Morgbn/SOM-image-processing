@@ -1,4 +1,4 @@
-#include "randomize.h"
+#include "include/randomize.h"
 
 void shuffleVects(float ** a, int len) {
   float * tmp;

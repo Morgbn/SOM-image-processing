@@ -1,4 +1,4 @@
-#include "core.h"
+#include "include/core.h"
 
 float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int height) {
   *nx = width * height;
@@ -18,7 +18,7 @@ float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int heigh
   return cells;
 }
 
-float ** som(float ** allx, int lenx, int nx, int nw) {
+float ** som(float ** allx, int lenx, int nx, int nw, int verbose) {
   // Normalisation de tous les vecteurs x de données
   normalizeAll(allx, nx, lenx);
 
@@ -26,8 +26,8 @@ float ** som(float ** allx, int lenx, int nx, int nw) {
   float ** w = create2Darray(nw, lenx);
 
  // connexions montantes wij aléatoires et non ordonnées
-  for (size_t i = 0; i < nw; i++) {
-    for (size_t j = 0; j < lenx; j++) {
+  for (int i = 0; i < nw; i++) {
+    for (int j = 0; j < lenx; j++) {
       float min = (av[j]-.3 > 0) ? av[j]-.3 : 0;
       float max = (av[j]+.3 < 1) ? av[j]+.3 : 1;
       w[i][j] = randomFloat(min, max); // intervalle autour de la moyenne
@@ -44,9 +44,9 @@ float ** som(float ** allx, int lenx, int nx, int nw) {
   // phase 1
   int T = Nit;
   int t2 = 0; // pr la phase 2
-  for (size_t t = 0; t < T; t++) {
+  for (int t = 0; t < T; t++) {
     // shuffleVects(allx, nx); // mélanger les vecteurs
-    // for (size_t k = 0; k < nx; k++) {
+    // for (int k = 0; k < nx; k++) {
       // float * x = allx[k];
     float * x = allx[t % nx];
     // float * x = allx[randomInt(0, nx)];
@@ -56,11 +56,11 @@ float ** som(float ** allx, int lenx, int nx, int nw) {
 
     // apprentissage
    #if NOGRID  // utiliser le rayon pour trouver les voisins
-    for (size_t i = 0; i < nw; i++) { // pour chaque neurones
+    for (int i = 0; i < nw; i++) { // pour chaque neurones
       float d = distEucl(w[i], w[bmuIndex], lenx); // distance j j*
       float hij = h(d, coefA, NhdSize); // func de voisinage
       if (d < NhdSize) {
-        for (size_t j = 0; j < lenx; j++) { // apprentissage
+        for (int j = 0; j < lenx; j++) { // apprentissage
           w[i][j] += coefA * hij * (x[j] - w[i][j]);
         }
       }
@@ -68,10 +68,10 @@ float ** som(float ** allx, int lenx, int nx, int nw) {
    #else       // voisins selon une grille
     int lenv;                                           // nombre de voisins
     float ** nei = getNei(w, bmuIndex, ceil(NhdSize), nw, lenx, &lenv); // voisins
-    for (size_t i = 0; i < lenv; i++) {
+    for (int i = 0; i < lenv; i++) {
       float d   = distEucl(nei[i], w[bmuIndex], lenx);  // distance j j*
       float hij = h(d, coefA, NhdSize);                 // func de voisinage
-      for (size_t j = 0; j < lenx; j++) {               // apprentissage
+      for (int j = 0; j < lenx; j++) {               // apprentissage
         nei[i][j] += coefA * hij * (x[j] - nei[i][j]);
       }
     }
@@ -83,7 +83,7 @@ float ** som(float ** allx, int lenx, int nx, int nw) {
     // }
     if (t == Nit/5) { // phase 2
       a0 = coefA = .1;
-      printf("PHASE 2 %f\n", coefA);
+      if (verbose) printf("PHASE 2 %f\n", coefA);
       t2 = t;
     }
   }
@@ -95,7 +95,7 @@ float ** som(float ** allx, int lenx, int nx, int nw) {
       for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
     #endif
 
-  printf("FIN (%i iterations): a = %g; NhdSize = %g\n", Nit, coefA, NhdSize);
+  if (verbose) printf("FIN (%i iterations): a = %g; NhdSize = %g\n", Nit, coefA, NhdSize);
   return w;
 }
 
@@ -108,9 +108,11 @@ void decreaseNhdSize(float * NhdSize, int Nit, int t, int T) {
 }
 
 float h(float dist, float a, int NhdSize) {
-  // return (dist < NhdSize) ? 1 : 0; // forme binaire
-  // if (!a) return 0;
-  return (float) exp((- dist * dist) / (2 * a * a));
+  #if HBIN
+    return (dist < NhdSize) ? 1 : 0; // forme binaire
+  #else
+    return (float) exp((- dist * dist) / (2 * a * a));
+  #endif
 }
 
 int findBmuIndex(float ** w, float * x, int lenx, int lenw) {
@@ -151,7 +153,7 @@ float ** getNei(float ** w, int bmuIndex, int r, int nw, int lenx, int * l) {
       nei[len++] = w[yi*width+xj];
     }
   }
-  for (size_t i = len+1; i < lenx; i++) free(nei[i]);   // libére espace non utilisé
+  for (int i = len+1; i < lenx; i++) free(nei[i]);   // libére espace non utilisé
 
   *l = len; // nombre de voisins*/
 
@@ -162,19 +164,19 @@ float ** getNei(float ** w, int bmuIndex, int r, int nw, int lenx, int * l) {
     if (bmuIndex + i < 0 || bmuIndex + i > nw) continue;
     nei[++nNei] = w[bmuIndex + i];
   }
-  for (size_t i = nNei+1; i < 2*r; i++) free(nei[i]);   // libére espace non utilisé
+  for (int i = nNei+1; i < 2*r; i++) free(nei[i]);   // libére espace non utilisé
   *l = nNei;                                            // nombre de voisins
   return nei;
 }
 
 void normalizeAll(float **w, int lenw, int lenx) {
-  for (size_t i = 0; i < lenw; i++) {
+  for (int i = 0; i < lenw; i++) {
    #if HSV || HSL
     w[i][0] /= 360;
    #elif HSVL
     w[i][0] /= 360; w[i][4] /= 255;
    #else
-    for (size_t j = 0; j < lenx; j++) w[i][j] /= 255; // et le diviser par le maximum
+    for (int j = 0; j < lenx; j++) w[i][j] /= 255; // et le diviser par le maximum
    #endif
   }
 }

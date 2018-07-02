@@ -1,8 +1,6 @@
-#include "som.h"
+#include "include/som.h"
 
-int main(int argc, char const *argv[]) {
-  if (argc < 2) usage("need a filename");
-  char * filename = (char *) argv[1];
+int editImg(const char * fin, const char * fout, int verbose) {
   srand(time(NULL)); // initialise rand
 
   int width, height;
@@ -10,7 +8,8 @@ int main(int argc, char const *argv[]) {
   int nw = 2;   // nombres de neurones
   int lenx = 0; // taille des capteurs
 
-  png_bytep * rowImg = readPngFile(filename, &width, &height);
+  png_bytep * rowImg = readPngFile(fin, &width, &height);
+  if (rowImg == NULL) return 1;
   float ** allx = getPoints(rowImg, &lenx, &nx, width, height);
 
   #if HSV
@@ -21,32 +20,32 @@ int main(int argc, char const *argv[]) {
   #endif
   #if HSVRGB
     lenx = 6;
-    float ** new = create2Darray(nx, lenx);
+    float ** newx = create2Darray(nx, lenx);
     for (int i = 0; i < nx; i++)
-      for (int j = 0; j < 3; j++) new[i][j] = allx[i][j];
+      for (int j = 0; j < 3; j++) newx[i][j] = allx[i][j];
 
     for (int i = 0; i < nx; i++) rgb2hsv(allx[i]);
 
     for (int i = 0; i < nx; i++)
-      for (int j = 0; j < 3; j++) new[i][3+j] = allx[i][j];
+      for (int j = 0; j < 3; j++) newx[i][3+j] = allx[i][j];
     free(allx);
-    allx = new;
+    allx = newx;
   #endif
   #if HSVL
     lenx = 4;
-    float ** new = create2Darray(nx, lenx);
+    float ** newx = create2Darray(nx, lenx);
     for (int i = 0; i < nx; i++)
-      new[i][3] = (0.2126*allx[i][0] + 0.7152*allx[i][1] + 0.0722*allx[i][2]);
+      newx[i][3] = (0.2126*allx[i][0] + 0.7152*allx[i][1] + 0.0722*allx[i][2]);
 
     for (int i = 0; i < nx; i++) {
       rgb2hsv(allx[i]);
-      for (int j = 0; j < 3; j++) new[i][j] = allx[i][j];
+      for (int j = 0; j < 3; j++) newx[i][j] = allx[i][j];
     }
     free(allx);
-    allx = new;
+    allx = newx;
   #endif
 
-  float ** w = som(allx, lenx, nx, nw);
+  float ** w = som(allx, lenx, nx, nw, verbose);
 
   #if HSV || HSVL
     for (int i = 0; i < nx; i++) hsv2rgb(allx[i]);
@@ -57,7 +56,7 @@ int main(int argc, char const *argv[]) {
     for (int i = 0; i < nw; i++) hsl2rgb(w[i]);
   #endif
 
-  printf("W = "); print2Darray("%g", w, lenx, nw);
+  if (verbose) { printf("W = "); print2Darray("%g", w, lenx, nw); }
 
   for(int y = 0; y < height; y++) {
     png_bytep row = rowImg[y];
@@ -76,10 +75,7 @@ int main(int argc, char const *argv[]) {
       px[3] = 255; // Alpha
     }
   }
-  char * newName = "output.png";
-  // char newName[255];
-  // filename[strlen(filename)-4] = 0;
-  // sprintf(newName, "%s_edited%s.png", filename, HSV ? "HSV" : (HSL ? "HSL" : HSVRGB ? "H&R" : (HSVL ? "HSVL": "RGB")));
-  writePngFile(newName, rowImg, width, height);
+  if (writePngFile(fout, rowImg, width, height))
+    return 1;
   return 0;
 }

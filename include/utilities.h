@@ -69,6 +69,6 @@ float ** create2Darray(int rows, int cols);
  * Affiche un message d'erreur et quite
  * @param error message
  */
-void usage(char * error);
+void usage(const char * error);
 
 #endif

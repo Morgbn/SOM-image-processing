@@ -19,7 +19,7 @@
  * @param  height   hauteur
  * @return          tableau de pixels RGBA
  */
-png_bytep * readPngFile(char *filename, int *width, int *height);
+png_bytep * readPngFile(const char *filename, int *width, int *height);
 
 /**
  * Ecrire une image au format png
@@ -27,8 +27,9 @@ png_bytep * readPngFile(char *filename, int *width, int *height);
  * @param row_pointers tableau de pixels RGBA
  * @param width        largeur
  * @param height       hauteur
+ * @return             0->pas d'erreur,1->erreur
  */
-void writePngFile(char *filename, png_bytep *row_pointers, int width, int height);
+int writePngFile(const char *filename, png_bytep *row_pointers, int width, int height);
 
 #if TEST
 /**

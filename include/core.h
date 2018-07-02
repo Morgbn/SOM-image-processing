@@ -1,16 +1,18 @@
 #ifndef CORE_INCLUDED
 #define CORE_INCLUDED
 
-#include "utilities.h"
-#include "randomize.h"
-#include "readpng.h"
-#include "display.h"
+#include "include/utilities.h"
+#include "include/randomize.h"
+#include "include/readpng.h"
+#include "include/display.h"
 
 #define NOGRID  01
 #define HSV  0
 #define HSL  0
 #define HSVRGB 0
 #define HSVL 01
+
+#define HBIN 0 // h binaire ?
 
 /**
  * Récupérer les vecteurs de caractéristiques dans un ficher
@@ -25,13 +27,14 @@ float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int heigh
 
 /**
  * Algo SOM
- * @param  allx vecteurs d'entrée
- * @param  lenx taille d'un vecteur
- * @param  nx   nombre de capteurs
- * @param  nw   nombre de neurone
- * @return      vecteur de neurone
+ * @param  allx     vecteurs d'entrée
+ * @param  lenx     taille d'un vecteur
+ * @param  nx       nombre de capteurs
+ * @param  nw       nombre de neurone
+ * @param  verbose
+ * @return          vecteur de neurone
  */
-float ** som(float ** allx, int lenx, int nx, int nw);
+float ** som(float ** allx, int lenx, int nx, int nw, int verbose);
 
 /**
  * Décroitre le coefficient d'apprentissage
