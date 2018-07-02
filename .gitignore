@@ -6,6 +6,8 @@ interface.pro.user
 .qmake.stash
 runner
 
+icon/*
+
 # Ignore the build and lib dirs
 build
 lib/*

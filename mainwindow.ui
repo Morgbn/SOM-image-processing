@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SOM image processing</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/images/icon/favicon.ico</normaloff>:/images/icon/favicon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="autoFillBackground">
@@ -131,7 +135,7 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/images/icon/icons8-open-48.png</normaloff>:/images/icon/icons8-open-48.png</iconset>
+     <normaloff>:/images/icon/open.png</normaloff>:/images/icon/open.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open</string>
@@ -143,7 +147,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/images/icon/icons8-save-50.png</normaloff>:/images/icon/icons8-save-50.png</iconset>
+     <normaloff>:/images/icon/save.png</normaloff>:/images/icon/save.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
