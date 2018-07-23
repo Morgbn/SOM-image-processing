@@ -80,3 +80,29 @@ void MainWindow::on_actionSave_triggered()
 
     ui->label->setText("Saved !");
 }
+
+
+
+void MainWindow::on_radioHSV_clicked()
+{
+    MY_HSV = 1;
+    MY_HSL = MY_HSVRGB = MY_HSVL = 0;
+}
+
+void MainWindow::on_radioHSL_clicked()
+{
+    MY_HSL = 1;
+    MY_HSV = MY_HSVRGB = MY_HSVL = 0;
+}
+
+void MainWindow::on_radioHSVRGB_clicked()
+{
+    MY_HSVRGB = 1;
+    MY_HSV = MY_HSL = MY_HSVL = 0;
+}
+
+void MainWindow::on_radioHSVL_clicked()
+{
+    MY_HSVL = 1;
+    MY_HSV = MY_HSL = MY_HSVRGB = 0;
+}

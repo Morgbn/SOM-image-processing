@@ -28,6 +28,14 @@ private slots:
 
     void on_actionSave_triggered();
 
+    void on_radioHSV_clicked();
+
+    void on_radioHSL_clicked();
+
+    void on_radioHSVRGB_clicked();
+
+    void on_radioHSVL_clicked();
+
 private:
     Ui::MainWindow *ui;
 

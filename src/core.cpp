@@ -90,16 +90,15 @@ float ** som(float ** allx, int lenx, int nx, int nw, QProgressBar *progressBar,
       if (verbose) printf("PHASE 2 %f\n", coefA);
       t2 = t;
     }
-    
+
     if (progressBar) progressBar->setValue(t);
   }
 
   for (int i = 0; i < nw; i++)
-    #if MY_HSV || MY_HSL || MY_HSVL
+    if (MY_HSV || MY_HSL || MY_HSVL)
       w[i][0] = floor(w[i][0] * 360);
-    #else
+    else
       for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
-    #endif
 
   if (verbose) printf("FIN (%i iterations): a = %g; NhdSize = %g\n", Nit, coefA, NhdSize);
   return w;
@@ -177,12 +176,12 @@ float ** getNei(float ** w, int bmuIndex, int r, int nw, int lenx, int * l) {
 
 void normalizeAll(float **w, int lenw, int lenx) {
   for (int i = 0; i < lenw; i++) {
-   #if MY_HSV || MY_HSL
-    w[i][0] /= 360;
-   #elif MY_HSVL
-    w[i][0] /= 360; w[i][4] /= 255;
-   #else
-    for (int j = 0; j < lenx; j++) w[i][j] /= 255; // et le diviser par le maximum
-   #endif
+    if (MY_HSV || MY_HSL)
+      w[i][0] /= 360;
+    else if (MY_HSVL) {
+      w[i][0] /= 360;
+      w[i][4] /= 255;
+    }
+    else for (int j = 0; j < lenx; j++) w[i][j] /= 255; // et le diviser par le maximum
   }
 }

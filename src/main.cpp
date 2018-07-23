@@ -2,7 +2,13 @@
 #include "include/som.h"
 #include <QApplication>
 
+int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL;
+
 int main(int argc, char *argv[]) {
+  /* DEF GLOBAL */
+  MY_HSV = 1; // utilisé l'espace HSV par défaut
+  MY_HSL = MY_HSVRGB = MY_HSVL = 0;
+
   if (argc > 3) { // terminal version
     if (strcmp(argv[1], "-T")) {
       fprintf(stderr, "%s: option non reconnue\n", argv[1]);

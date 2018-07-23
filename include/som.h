@@ -5,6 +5,8 @@
 #include "include/utilities.h"
 #include "include/mainwindow.h"
 
+extern int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL;
+
 /**
  * Ouvrir/Editer/Enregistrer une image png
  * @param  fin          nom du png à ouvrir

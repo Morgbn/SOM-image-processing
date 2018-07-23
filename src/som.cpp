@@ -12,26 +12,24 @@ int editImg(const char * fin, const char * fout, QProgressBar *progressBar, int 
   if (rowImg == NULL) return 1;
   float ** allx = getPoints(rowImg, &lenx, &nx, width, height);
 
-  #if MY_HSV
+  if (MY_HSV)
     for (int i = 0; i < nx; i++) rgb2hsv(allx[i]);
-  #endif
-  #if MY_HSL
+  if (MY_HSL)
     for (int i = 0; i < nx; i++) rgb2hsl(allx[i]);
-  #endif
-  #if MY_HSVRGB
+  if (MY_HSVRGB) {
     lenx = 6;
     float ** newx = create2Darray(nx, lenx);
     for (int i = 0; i < nx; i++)
-      for (int j = 0; j < 3; j++) newx[i][j] = allx[i][j];
+    for (int j = 0; j < 3; j++) newx[i][j] = allx[i][j];
 
     for (int i = 0; i < nx; i++) rgb2hsv(allx[i]);
 
     for (int i = 0; i < nx; i++)
-      for (int j = 0; j < 3; j++) newx[i][3+j] = allx[i][j];
+    for (int j = 0; j < 3; j++) newx[i][3+j] = allx[i][j];
     free(allx);
     allx = newx;
-  #endif
-  #if MY_HSVL
+  }
+  if (MY_HSVL) {
     lenx = 4;
     float ** newx = create2Darray(nx, lenx);
     for (int i = 0; i < nx; i++)
@@ -43,18 +41,18 @@ int editImg(const char * fin, const char * fout, QProgressBar *progressBar, int 
     }
     free(allx);
     allx = newx;
-  #endif
+  }
 
   float ** w = som(allx, lenx, nx, nw, progressBar, verbose);
 
-  #if MY_HSV || MY_HSVL
+  if (MY_HSV || MY_HSVL) {
     for (int i = 0; i < nx; i++) hsv2rgb(allx[i]);
     for (int i = 0; i < nw; i++) hsv2rgb(w[i]);
-  #endif
-  #if MY_HSL
+  }
+  if (MY_HSL) {
     for (int i = 0; i < nx; i++) hsl2rgb(allx[i]);
     for (int i = 0; i < nw; i++) hsl2rgb(w[i]);
-  #endif
+  }
 
   if (verbose) { printf("W = "); print2Darray("%g", w, lenx, nw); }
 
