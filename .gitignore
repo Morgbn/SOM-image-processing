@@ -1,12 +1,9 @@
 # Ignore file generated
 *.txt
-*.png
 Makefile
 interface.pro.user
 .qmake.stash
 runner
-
-icon/*
 
 # Ignore the build and lib dirs
 build
