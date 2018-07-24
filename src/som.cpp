@@ -63,7 +63,7 @@ int editImg(const char * fin, const char * fout, QProgressBar *progressBar, int 
       float d, min;
       int bestIndex;
       for (int i = 0; i < nw; i++) {
-        d = 0; for (int j = 0; j < 3; j++) d += pow(px[i] - w[i][j], 2); // dist eucl
+        d = 0; for (int j = 0; j < 3; j++) d += pow(px[j] - w[i][j], 2); // dist eucl
         if (!i || d < min) { // plus petite distance
           min = d;
           bestIndex = i;
@@ -73,6 +73,19 @@ int editImg(const char * fin, const char * fout, QProgressBar *progressBar, int 
       px[3] = 255; // Alpha
     }
   }
+
+  if (makeTransparent) {
+    png_bytep firstPx = &(rowImg[0][0]); // estime que l'angle haut/droit = arriére plan
+    for(int y = 0; y < height; y++) {
+      png_bytep row = rowImg[y];
+      for(int x = 0; x < width; x++) {
+        png_bytep px = &(row[x * 4]); // un pixel = [R,G,B,A]
+        int d = 0; for (int j = 0; j < 3; j++) d += pow(px[j] - firstPx[j], 2); // dist eucl
+        if (d == 0) px[3] = 0; // mettre transparent
+      }
+    }
+  }
+
   if (writePngFile(fout, rowImg, width, height))
     return 1;
   return 0;
