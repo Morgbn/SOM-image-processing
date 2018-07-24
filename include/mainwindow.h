@@ -36,6 +36,8 @@ private slots:
 
     void on_radioHSVL_clicked();
 
+    void on_checkBox_stateChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
 

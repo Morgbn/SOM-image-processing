@@ -106,3 +106,8 @@ void MainWindow::on_radioHSVL_clicked()
     MY_HSVL = 1;
     MY_HSV = MY_HSL = MY_HSVRGB = 0;
 }
+
+void MainWindow::on_checkBox_stateChanged(int arg1)
+{
+    makeTransparent = arg1;
+}
