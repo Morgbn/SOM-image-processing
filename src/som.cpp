@@ -1,11 +1,10 @@
 #include "include/som.h"
 
-int editImg(const char * fin, const char * fout, QProgressBar *progressBar, int verbose) {
+int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressBar, int verbose) {
   srand(time(NULL)); // initialise rand
 
   int width, height;
   int nx = 0;   // nombres de capteurs
-  int nw = 2;   // nombres de neurones
   int lenx = 0; // taille des capteurs
 
   png_bytep * rowImg = readPngFile(fin, &width, &height);
@@ -61,7 +60,7 @@ int editImg(const char * fin, const char * fout, QProgressBar *progressBar, int 
     for(int x = 0; x < width; x++) {
       png_bytep px = &(row[x * 4]); // un pixel = [R,G,B,A]
       float d, min;
-      int bestIndex;
+      int bestIndex = 0;
       for (int i = 0; i < nw; i++) {
         d = 0; for (int j = 0; j < 3; j++) d += pow(px[j] - w[i][j], 2); // dist eucl
         if (!i || d < min) { // plus petite distance

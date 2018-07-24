@@ -53,7 +53,7 @@ void MainWindow::on_pushButton_clicked()
         return;
     }
     ui->progressBar->show();
-    int error = editImg(fileToOpen, "/tmp/somOut.png", ui->progressBar, 0);
+    int error = editImg(fileToOpen, "/tmp/somOut.png", nw, ui->progressBar, 0);
     ui->progressBar->hide();
     if (error) // erreur lors du traitement de l'image
     {
@@ -110,4 +110,9 @@ void MainWindow::on_radioHSVL_clicked()
 void MainWindow::on_checkBox_stateChanged(int arg1)
 {
     makeTransparent = arg1;
+}
+
+void MainWindow::on_spinBox_valueChanged(int arg1)
+{
+    nw = arg1;
 }
