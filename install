@@ -3,7 +3,7 @@
 
 if test "$1" = "clean"
 then
-  rm -rf build/ runner
+  rm -rf build/ runner Makefile
 else
   qmake *.pro
   make
