@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>529</width>
+    <width>557</width>
     <height>427</height>
    </rect>
   </property>
@@ -94,12 +94,22 @@ QProgressBar::chunk {
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
+         <widget class="QRadioButton" name="radioButton">
+          <property name="text">
+           <string>RGB</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QRadioButton" name="radioHSV">
           <property name="text">
            <string>HSV</string>
           </property>
           <property name="checked">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -214,7 +224,7 @@ QProgressBar::chunk {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>529</width>
+     <width>557</width>
      <height>25</height>
     </rect>
    </property>

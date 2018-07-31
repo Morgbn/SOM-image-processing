@@ -116,3 +116,8 @@ void MainWindow::on_spinBox_valueChanged(int arg1)
 {
     nw = arg1;
 }
+
+void MainWindow::on_radioButton_clicked()
+{
+    MY_HSV = MY_HSL = MY_HSVRGB = MY_HSVL = 0;
+}

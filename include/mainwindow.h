@@ -40,6 +40,8 @@ private slots:
 
     void on_spinBox_valueChanged(int arg1);
 
+    void on_radioButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
