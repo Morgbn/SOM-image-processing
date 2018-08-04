@@ -100,3 +100,28 @@ int writePngFile(const char *filename, png_bytep *row_pointers, int width, int h
   fclose(fp);
   return 0;
 }
+
+int samePx(png_bytep px1, png_bytep px2) {
+  if (px1[0] == px2[0] && // R
+      px1[1] == px2[1] && // G
+      px1[2] == px2[2] && // B
+      px1[3] == px2[3])   // A
+    return 1;
+  return 0;
+}
+
+png_bytep * neiPx(png_bytep * img, int x, int y, int w, int h, int * n) {
+  *n = 0;
+  png_bytep * nei = (png_bytep *) malloc(8 * sizeof(png_bytep));
+  if (nei == NULL) { fprintf(stderr, "error malloc in neiPx\n"); exit(1); }
+
+  for(int yi = y-1; (yi <= y+1) && (yi < h); yi++) {
+    if (yi < 0) continue;
+    png_bytep row = img[yi];
+    for(int xi = x-1; (xi <= x+1) && (xi < w); xi++) {
+      if (xi < 0 || (xi == x && yi == y)) continue;
+      nei[(*n)++] = &(row[xi * 4]);
+    }
+  }
+  return nei;
+}

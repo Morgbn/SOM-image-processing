@@ -73,8 +73,40 @@ int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressB
     }
   }
 
+  if (postProcess) {
+    for(int y = 0; y < height; y++) {
+      png_bytep row = rowImg[y];
+      for(int x = 0; x < width; x++) {
+        png_bytep px = &(row[x * 4]); // un pixel = [R,G,B,A]
+        int n;
+        png_bytep * nei = neiPx(rowImg, x, y, width, height, &n);
+
+        int ncolors[9] = {0}; // jusqu'a 9 couleurs différentes
+        ncolors[0] = 1;
+        for (int i = 0; i < n; i++) { // parcourir les voisins
+          if (samePx(nei[i], px)) ncolors[0]++; // même couleurs
+          else {
+            for (int j = 0; j < i+1; j++)
+            if (samePx(nei[i], nei[j])) {
+              ncolors[j+1]++; break;
+            }
+          }
+        }
+        int iMax = 0;
+        for (int i = 0; i < 9; i++)
+          if (ncolors[iMax] < ncolors[i]) iMax = i;
+        if (iMax != 0) {
+          px[0] = nei[iMax-1][0];
+          px[1] = nei[iMax-1][1];
+          px[2] = nei[iMax-1][2];
+          px[3] = nei[iMax-1][3];
+        }
+      }
+    }
+  }
+
   if (makeTransparent) {
-    png_bytep firstPx = &(rowImg[0][0]); // estime que l'angle haut/droit = arriére plan
+    png_bytep firstPx = &(rowImg[0][width/2]); // estime que milieu haut = arriére plan
     for(int y = 0; y < height; y++) {
       png_bytep row = rowImg[y];
       for(int x = 0; x < width; x++) {

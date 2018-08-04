@@ -121,3 +121,9 @@ void MainWindow::on_radioButton_clicked()
 {
     MY_HSV = MY_HSL = MY_HSVRGB = MY_HSVL = 0;
 }
+
+void MainWindow::on_checkBox_2_stateChanged(int arg1)
+{
+    postProcess = arg1;
+    printf("%i %i\n", arg1, postProcess);
+}

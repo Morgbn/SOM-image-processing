@@ -8,7 +8,7 @@
 #include "include/mainwindow.h"
 
 #define NOGRID  01
-extern int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL;
+extern int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL, POST_PROCESS;
 
 #define HBIN 0 // h binaire ?
 

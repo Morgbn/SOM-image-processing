@@ -5,7 +5,7 @@
 #include "include/utilities.h"
 #include "include/mainwindow.h"
 
-extern int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL, makeTransparent, nw;
+extern int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL, makeTransparent, nw, postProcess;
 
 /**
  * Ouvrir/Editer/Enregistrer une image png

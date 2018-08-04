@@ -31,14 +31,24 @@ png_bytep * readPngFile(const char *filename, int *width, int *height);
  */
 int writePngFile(const char *filename, png_bytep *row_pointers, int width, int height);
 
-#if TEST
 /**
- * Traitement de l'image
- * @param row_pointers tableau de pixel RGBA
- * @param width        largeur
- * @param height       hauteur
+ * Regarde si 2 pixels sont identiques
+ * @param  px1
+ * @param  px2
+ * @return     1 = identique, 0 sinon
  */
-void processPngFile(png_bytep * row_pointers, int width, int height);
-#endif
+int samePx(png_bytep px1, png_bytep px2);
+
+/**
+ * Cherche les 8 voisins d'un pixel
+ * @param  img image dans laquel chercher
+ * @param  x
+ * @param  y
+ * @param  w   largeur de l'image
+ * @param  h   hauteur de l'image
+ * @param  n   nombre de voisin trouvé
+ * @return     tableau de voisins
+ */
+png_bytep * neiPx(png_bytep * img, int x, int y, int w, int h, int * n);
 
 #endif

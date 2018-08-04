@@ -2,11 +2,21 @@
 #include "include/som.h"
 #include <QApplication>
 
-int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL, makeTransparent, nw;
+int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL, makeTransparent, nw, postProcess;
+
+void changeOption(int i, char *argv[]) {
+  if (!strcmp(argv[i], "-t"))      // mettre le bg transparent ou pas
+    makeTransparent = (argv[i+1][0] == '1') ? 1 : 0;
+  else if (!strcmp(argv[i], "-n")) // choisir le nombre de neurones
+    nw = atoi(argv[i+1]);
+  else if (!strcmp(argv[i], "-p")) // aplliquer du post process ou pas
+    postProcess = atoi(argv[i+1]);
+}
 
 int main(int argc, char *argv[]) {
   /* DEF GLOBAL - par défaut : */
   MY_HSV = MY_HSL = MY_HSVRGB = MY_HSVL = 0; // utiliser l'espace RGB
+  postProcess = 1;         // retouche final
   makeTransparent = 0;     // ne pas mettre l'arriére plan transparent
   nw = 2;                  // segmenter l'image en 2 couleurs
 
@@ -15,18 +25,9 @@ int main(int argc, char *argv[]) {
       fprintf(stderr, "%s: option non reconnue\n", argv[1]);
     }
     else {
-      if (argc > 6) { // 2eme option
-        if (!strcmp(argv[6], "-t"))      // mettre le bg transparent ou pas
-          makeTransparent = (argv[7][0] == '1') ? 1 : 0;
-        else if (!strcmp(argv[6], "-n")) // choisir le nombre de neurones
-          nw = atoi(argv[7]);
-      }
-      if (argc > 4) { // 1er option
-        if (!strcmp(argv[4], "-t"))      // mettre le bg transparent ou pas
-          makeTransparent = (argv[5][0] == '1') ? 1 : 0;
-        else if (!strcmp(argv[4], "-n")) // choisir le nombre de neurones
-            nw = atoi(argv[5]);
-      }
+      if (argc > 8) changeOption(8, argv); // 3eme option
+      if (argc > 6) changeOption(6, argv); // 2eme option
+      if (argc > 4) changeOption(4, argv); // 1er option
       // changer le mode de traitement
       if (!strcmp(argv[argc-1], "HSL")) MY_HSL = 1;
       else if (!strcmp(argv[argc-1], "HSVRGB")) MY_HSVRGB = 1;
@@ -44,6 +45,6 @@ int main(int argc, char *argv[]) {
     w.show();
     return app.exec();
   }
-  fprintf(stderr, "%s [-T] [imageIn.png] [imageOut.png] [-t (0|1)] [-n (nombre)] [mode(HSV|HSL|HSVRGB|HSVL)]\n", argv[0]);
+  fprintf(stderr, "%s [-T] [imageIn.png] [imageOut.png] [-t (0|1)] [-n (number)] [-p (0|1)] [mode(HSV|HSL|HSVRGB|HSVL)]\n", argv[0]);
   return 1;
 }

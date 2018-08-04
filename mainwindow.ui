@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>557</width>
+    <width>618</width>
     <height>427</height>
    </rect>
   </property>
@@ -134,10 +134,24 @@ QProgressBar::chunk {
           </property>
          </widget>
         </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="QCheckBox" name="checkBox">
           <property name="text">
            <string>Transparent Background</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_2">
+          <property name="text">
+           <string>Post-Process</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -224,7 +238,7 @@ QProgressBar::chunk {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>557</width>
+     <width>618</width>
      <height>25</height>
     </rect>
    </property>
