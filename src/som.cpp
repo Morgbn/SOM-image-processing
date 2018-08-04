@@ -8,6 +8,7 @@ int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressB
   int lenx = 0; // taille des capteurs
 
   png_bytep * rowImg = readPngFile(fin, &width, &height);
+  png_bytep * cpyImg = readPngFile(fin, &width, &height); // copie
   if (rowImg == NULL) return 1;
   float ** allx = getPoints(rowImg, &lenx, &nx, width, height);
 
@@ -109,12 +110,15 @@ int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressB
     png_bytep firstPx = &(rowImg[0][width/2]); // estime que milieu haut = arriére plan
     for(int y = 0; y < height; y++) {
       png_bytep row = rowImg[y];
+      png_bytep cpyRow = cpyImg[y];
       for(int x = 0; x < width; x++) {
         png_bytep px = &(row[x * 4]); // un pixel = [R,G,B,A]
+        png_bytep pxOr = &(cpyRow[x * 4]); // pixel d'origine
         int d = 0; for (int j = 0; j < 3; j++) d += pow(px[j] - firstPx[j], 2); // dist eucl
-        if (d == 0) px[3] = 0; // mettre transparent
+        if (d == 0) pxOr[3] = 0; // mettre transparent
       }
     }
+    rowImg = cpyImg;
   }
 
   if (writePngFile(fout, rowImg, width, height))
