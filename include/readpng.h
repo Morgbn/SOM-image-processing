@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <png.h>
 
+#include "include/utilities.h"
+#include "include/mainwindow.h"
+
 /*
 * readPngFile, writePngFile, processPngFile
 * quite highly inspired from http://zarb.org/~gc/html/libpng.html
@@ -50,5 +53,16 @@ int samePx(png_bytep px1, png_bytep px2);
  * @return     tableau de voisins
  */
 png_bytep * neiPx(png_bytep * img, int x, int y, int w, int h, int * n);
+
+/**
+ * Filtre médian
+ * @param img         image
+ * @param w           largeur de l'image
+ * @param h           hauteur de l'image
+ * @param size        taille du filtre
+ * @param progressBar barre de progres
+ * @param progress    indicateur de progression
+ */
+void medianFilter(png_bytep * img, int w, int h, int size, QProgressBar *progressBar, int *progress);
 
 #endif

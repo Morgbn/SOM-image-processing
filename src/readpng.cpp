@@ -87,7 +87,7 @@ int writePngFile(const char *filename, png_bytep *row_pointers, int width, int h
   );
   png_write_info(png, info);
 
-  png_set_filler(png, 0, PNG_FILLER_AFTER); // To remove the alpha channel for PNG_COLOR_TYPE_RGB format,
+  // png_set_filler(png, 0, PNG_FILLER_AFTER); // To remove the alpha channel for PNG_COLOR_TYPE_RGB format,
 
   png_write_image(png, row_pointers);
   png_write_end(png, NULL);
@@ -124,4 +124,27 @@ png_bytep * neiPx(png_bytep * img, int x, int y, int w, int h, int * n) {
     }
   }
   return nei;
+}
+
+int medianFilter_cmpfunc(const void * a, const void * b) { return ( *(unsigned char*)a - *(unsigned char*)b ); }
+
+void medianFilter(png_bytep * img, int w, int h, int size, QProgressBar *progressBar, int *progress) {
+  for (int chan = 0; chan < 3; chan++) { // channel RGB
+    unsigned char window[size * size];
+    for (int y = 0; y < h; y++) {
+      for (int x = 0; x < w; x++) {
+        if (progressBar) progressBar->setValue((*progress)++);
+        int i = 0;
+        for (int yi = y-size/2; (yi < 1+y+size/2) && (yi < h); yi++) {
+          if (yi < 0) continue;
+          for (int xi = x-size/2; (xi < 1+x+size/2) && (xi < w); xi++) {
+            if (xi < 0) continue;
+            window[i++] = (&(img[yi][xi*4]))[chan];
+          }
+        }
+        qsort(window, sizeof window / sizeof *window, sizeof *window, medianFilter_cmpfunc);
+        (&(img[y][x*4]))[chan] = window[(size*size)/2]; // valeur mediane
+      }
+    }
+  }
 }
