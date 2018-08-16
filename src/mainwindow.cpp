@@ -70,13 +70,14 @@ void MainWindow::on_actionSave_triggered()
 {
     if (scene2->width() == 0) return; // pas d'image à enregistrer
     QString fileName = QFileDialog::getSaveFileName(this,"Save Image File",QDir::currentPath(),"Image PNG (*.png)");
-    QImage pixmap(scene2->width(), scene2->height(), QImage::Format_ARGB32_Premultiplied);
-    QPainter p;
-    p.begin(&pixmap);
-    p.setRenderHint(QPainter::Antialiasing, true);
-    scene2->render(&p);
-    p.end();
-    pixmap.save(fileName, "PNG");
+    QFile file("/tmp/somOut.png");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::information(this,"Save Image File","Error while saving image!");
+        return;
+    }
+    if (QFile::exists(fileName)) QFile::remove(fileName);
+    file.copy(fileName);
 
     ui->label->setText("Saved !");
 }
