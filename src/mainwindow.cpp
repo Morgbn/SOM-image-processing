@@ -33,6 +33,7 @@ void MainWindow::on_actionOpen_triggered()
             return;
         }
         scene->clear();
+        scene->setSceneRect(0, 0, pixmap.width(), pixmap.height());
         scene->addPixmap(pixmap);
         ui->graphicsView->show();
         fileToOpen = strdup(fileName.toStdString().c_str());

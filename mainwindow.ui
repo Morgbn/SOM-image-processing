@@ -64,14 +64,14 @@ QProgressBar::chunk {
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QGraphicsView" name="graphicsView">
+         <widget class="GraphWidget" name="graphicsView">
           <property name="enabled">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QGraphicsView" name="graphicsView_2"/>
+         <widget class="GraphWidget" name="graphicsView_2"/>
         </item>
        </layout>
       </item>
@@ -300,6 +300,13 @@ QProgressBar::chunk {
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GraphWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>include/graphwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="icons.qrc"/>
  </resources>

@@ -9,6 +9,8 @@
 #include <QProgressBar>
 #include <QDesktopWidget>
 
+#include "include/graphwidget.h"
+
 namespace Ui {
 class MainWindow;
 }
