@@ -1,101 +1,146 @@
-#include "include/som.h"
+#include "include/core.h"
 
-int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressBar, int verbose) {
-  srand(time(NULL)); // initialise rand
+float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int height) {
+  *nx = width * height;
+  *lenx = 3; // R,G,B,(A)
 
-  int width, height;
-  int nx = 0;   // nombres de capteurs
-  int lenx = 0; // taille des capteurs
+  float ** cells = create2Darray(*nx, *lenx);
 
-  png_bytep * rowImg = readPngFile(fin, &width, &height);
-  png_bytep * cpyImg = readPngFile(fin, &width, &height); // copie
-  if (rowImg == NULL) return 1;
-  float ** allx = getPoints(rowImg, &lenx, &nx, width, height);
-
-  if (MY_HSV)
-    for (int i = 0; i < nx; i++) rgb2hsv(allx[i]);
-  if (MY_HSL)
-    for (int i = 0; i < nx; i++) rgb2hsl(allx[i]);
-  if (MY_HSVRGB) {
-    lenx = 6;
-    float ** newx = create2Darray(nx, lenx);
-    for (int i = 0; i < nx; i++)
-    for (int j = 0; j < 3; j++) newx[i][j] = allx[i][j];
-
-    for (int i = 0; i < nx; i++) rgb2hsv(allx[i]);
-
-    for (int i = 0; i < nx; i++)
-    for (int j = 0; j < 3; j++) newx[i][3+j] = allx[i][j];
-    free(allx);
-    allx = newx;
-  }
-  if (MY_HSVL) {
-    lenx = 4;
-    float ** newx = create2Darray(nx, lenx);
-    for (int i = 0; i < nx; i++)
-      newx[i][3] = (0.2126*allx[i][0] + 0.7152*allx[i][1] + 0.0722*allx[i][2]);
-
-    for (int i = 0; i < nx; i++) {
-      rgb2hsv(allx[i]);
-      for (int j = 0; j < 3; j++) newx[i][j] = allx[i][j];
-    }
-    free(allx);
-    allx = newx;
-  }
-
-  float ** w = som(allx, lenx, nx, nw, progressBar, verbose);
-
-  if (MY_HSV || MY_HSVL) {
-    for (int i = 0; i < nx; i++) hsv2rgb(allx[i]);
-    for (int i = 0; i < nw; i++) hsv2rgb(w[i]);
-  }
-  if (MY_HSL) {
-    for (int i = 0; i < nx; i++) hsl2rgb(allx[i]);
-    for (int i = 0; i < nw; i++) hsl2rgb(w[i]);
-  }
-
-  if (verbose) { printf("W = "); print2Darray("%g", w, lenx, nw); }
-
+  int j = 0;
   for(int y = 0; y < height; y++) {
     png_bytep row = rowImg[y];
     for(int x = 0; x < width; x++) {
       png_bytep px = &(row[x * 4]); // un pixel = [R,G,B,A]
-      float d, min;
-      int bestIndex = 0;
-      for (int i = 0; i < nw; i++) {
-        d = 0; for (int j = 0; j < 3; j++) d += pow(px[j] - w[i][j], 2); // dist eucl
-        if (!i || d < min) { // plus petite distance
-          min = d;
-          bestIndex = i;
+      for (int i = 0; i < *lenx; i++) cells[j][i] = px[i];
+      j++;
+    }
+  }
+  return cells;
+}
+
+float ** som(float ** allx, int lenx, int nx, int nw, QProgressBar *progressBar, int verbose) {
+  // Normalisation de tous les vecteurs x de données
+  normalizeAll(allx, nx, lenx);
+
+  float * av = vectorAverage(allx, lenx, nx); // calcule la moyenne
+  float ** w = create2Darray(nw, lenx);
+
+ // connexions montantes wij aléatoires et non ordonnées
+  for (int i = 0; i < nw; i++) {
+    for (int j = 0; j < lenx; j++) {
+      float min = (av[j]-.3 > 0) ? av[j]-.3 : 0;
+      float max = (av[j]+.3 < 1) ? av[j]+.3 : 1;
+      w[i][j] = randomFloat(min, max); // intervalle autour de la moyenne
+    }
+  }
+
+  float N0 = nw/2;    // rayon initiale = 50% des neurones
+  float NhdSize = N0;
+  float a0 = .95;      // coefficient initiale d'apprentissage
+  float coefA = a0;
+  // int Nit = nx * 500; // nombre d'itérations
+  int Nit = nx; // nombre d'itérations
+
+  // phase 1
+  int T = Nit;
+  int t2 = 0; // pr la phase 2
+  if (progressBar) {
+    progressBar->setMinimum(0);
+    progressBar->setMaximum(T);
+  }
+  for (int t = 0; t < T; t++) {
+    float * x = allx[t % nx];
+
+    // calcule de distance pour trouver le J*
+    int bmuIndex = findBmuIndex(w, x, lenx, nw);
+
+    // apprentissage
+    // utiliser le rayon pour trouver les voisins
+    for (int i = 0; i < nw; i++) { // pour chaque neurones
+      float d = distEucl(w[i], w[bmuIndex], lenx); // distance j j*
+      float hij = h(d, coefA);           // func de voisinage
+      if (d < NhdSize) {
+        for (int j = 0; j < lenx; j++) { // apprentissage
+          w[i][j] += coefA * hij * (x[j] - w[i][j]);
         }
       }
-      for (int i = 0; i < 3; i++) px[i] = w[bestIndex][i]; // RGB
-      px[3] = 255; // Alpha
+    }
+
+    decreaseA(&coefA, a0, t-t2, T);
+    decreaseNhdSize(&NhdSize, N0, t, T);
+
+    if (t == Nit/5) { // phase 2
+      a0 = coefA = .1;
+      if (verbose) printf("PHASE 2 %f\n", coefA);
+      t2 = t;
+    }
+
+    if (progressBar) progressBar->setValue(t);
+  }
+
+  for (int i = 0; i < nw; i++)
+    if (MY_HSV || MY_HSL || MY_HSVL)
+      w[i][0] = floor(w[i][0] * 360);
+    else
+      for (int j = 0; j < lenx; j++) w[i][j] = floor(w[i][j] * 255);
+
+  if (verbose) printf("FIN (%i iterations): a = %g; NhdSize = %g\n", Nit, coefA, NhdSize);
+  return w;
+}
+
+void decreaseA(float * a, float a0, int t, int T) {
+  *a = a0 * exp( -(double)t / T);
+}
+
+void decreaseNhdSize(float * NhdSize, int Nit, int t, int T) {
+  *NhdSize = Nit * (1 - (1.0 * t) / T);
+}
+
+float h(float dist, float a) {
+    return (float) exp((- dist * dist) / (2 * a * a));
+}
+
+int findBmuIndex(float ** w, float * x, int lenx, int lenw) {
+  int bmuIndex = 0;
+  int nbmu = 1;                           // nb de déclenchements
+  float jdist = -1;
+
+  for (int i = 0; i < lenw; i++) {
+    float dist = distEucl(x, w[i], lenx); // calcul distance
+
+    if (dist <= jdist || jdist < 0) {     // nouveau déclenchement
+      if (dist == jdist &&                // déclenchement multiples
+        randomInt(0, ++nbmu)) continue;  // -> sélection aléatoire
+      if (dist < jdist)                   // nouveau déclenchement
+        nbmu = 1;                         // -> remet à 1
+      jdist = dist;
+      bmuIndex = i;
     }
   }
+  return bmuIndex;
+}
 
-  if (postProcess) { // enlève les petites zones / bruits
-    int i = 0;
-    progressBar->setMaximum(width*height);
-    medianFilter(rowImg, width, height, 11, progressBar, &i);
+float ** getNei(float ** w, int bmuIndex, int r, int nw, int lenx, int * l) {
+  float ** nei = create2Darray(2*r, lenx);              // allocation pr voisins
+  int nNei = -1;                                        // nb de voisins
+  for (int i = -r; i <= r; i++) {
+    if (!i) continue;                                   // le bmu (l'exclure de la liste)
+    if (bmuIndex + i < 0 || bmuIndex + i > nw) continue;
+    nei[++nNei] = w[bmuIndex + i];
   }
+  for (int i = nNei+1; i < 2*r; i++) free(nei[i]);   // libére espace non utilisé
+  *l = nNei;                                            // nombre de voisins
+  return nei;
+}
 
-  if (makeTransparent) {
-    png_bytep firstPx = &(rowImg[0][width/2]); // estime que milieu haut = arriére plan
-    for (int y = 0; y < height; y++) {
-      png_bytep row = rowImg[y];
-      png_bytep cpyRow = cpyImg[y];
-      for (int x = 0; x < width; x++) {
-        png_bytep px = &(row[x * 4]); // un pixel = [R,G,B,A]
-        png_bytep pxOr = &(cpyRow[x * 4]); // pixel d'origine
-        int d = 0; for (int j = 0; j < 3; j++) d += pow(px[j] - firstPx[j], 2); // dist eucl
-        if (d == 0) pxOr[3] = 0; // mettre transparent
-      }
+void normalizeAll(float **w, int lenw, int lenx) {
+  for (int i = 0; i < lenw; i++) {
+    if (MY_HSV || MY_HSL)
+      w[i][0] /= 360;
+    else if (MY_HSVL) {
+      w[i][0] /= 360;
+      w[i][4] /= 255;
     }
-    rowImg = cpyImg;
+    else for (int j = 0; j < lenx; j++) w[i][j] /= 255; // et le diviser par le maximum
   }
-
-  if (writePngFile(fout, rowImg, width, height))
-    return 1;
-  return 0;
 }
