@@ -1,5 +1,5 @@
-#ifndef CORE_INCLUDED
-#define CORE_INCLUDED
+#ifndef SOM_INCLUDED
+#define SOM_INCLUDED
 /** @file som .h
     SOM algorithme et ses fonctions
 */

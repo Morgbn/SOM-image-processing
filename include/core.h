@@ -1,3 +1,5 @@
+#ifndef CORE_INCLUDED
+#define CORE_INCLUDED
 /** @file core.h
     Fonction principale, appelle notamment functions de som.h et readpng.h
 */
@@ -21,3 +23,5 @@ extern int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL, makeTransparent, nw, postProcess;
  * @return              0->pas d'erreur, 1->erreur
  */
 int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressBar, int verbose);
+
+#endif
