@@ -1,6 +1,6 @@
 #ifndef SOM_INCLUDED
 #define SOM_INCLUDED
-/** @file som .h
+/** @file som.h
     SOM algorithme et ses fonctions
 */
 
