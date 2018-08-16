@@ -3,10 +3,10 @@
 
 if test "$1" = "clean"
 then
-  rm -rf build/ runner Makefile
+  rm -rf build/ somimg Makefile
 else
   qmake *.pro
   make
-  ln -s build/runner
+  ln -s build/somimg
   echo 'Done'
 fi
