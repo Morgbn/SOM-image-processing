@@ -45,6 +45,6 @@ int main(int argc, char *argv[]) {
     w.show();
     return app.exec();
   }
-  fprintf(stderr, "%s [-T] [imageIn.png] [imageOut.png] [-t (0|1)] [-n (number)] [-p (0|1)] [mode(HSV|HSL|HSVRGB|HSVL)]\n", argv[0]);
+  fprintf(stderr, "%s [-T] </path/To/image_to_process.png> </path/To/processed_image.png> [-t {0|1}] [-n NUMBER)] [-p {0|1}] [mode{HSV|HSL|HSVRGB|HSVL}]\n", argv[0]);
   return 1;
 }

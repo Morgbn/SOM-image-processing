@@ -1,38 +1,49 @@
 # Détourage d'image
 
-Utilisation de l'algorithme SOM afin de détourer des images automatiquement.
+Somimg est un programme d'édition d'image.
+L'application est basée sur Qt, C++ et utilise un réseau de neurones artificiels sous forme de SOM (self organizing maps).
+Somimg permet de segmenter des images (les images doivent être au format PNG) et essayer de supprimer l'arrière-plan de celle-ci.
 
 ### Installation
 
-```
-make
+```sh
+$ install
 ```
 
 ### Exécution du programme
 
+Exécuter le programme avec une interface graphique:
+```sh
+$ somimg
 ```
-python test/genNum.py 200 2 > inPoints.txt
-bin/runner inPoints.txt
-```
-ou
+Exécuter le programme en ligne de commande:
 
+```sh
+$ somimg -T </path/To/image_to_process.png> </path/To/processed_image.png> [OPTION]
 ```
-python test/img-to-points.py test/draw1.png > inPoints.txt
-bin/runner inPoints.txt
-```
+##### Options en ligne de commande
 
-### Tests
-
-Visualisation avec pyton (dans include/som.h, ligne 7, mettre #define GNUPLOT 0):
-
+Rendre l'arrière-plan transparent (ou pas) [défaut=non]:
+```sh
+-t {0|1}
 ```
-make
-test/visual.sh [Nombre d'éxection]
+Choisir le nombre de couleurs pour la segmentation [défaut=2]:
+```sh
+-n NOMBRE
 ```
+Utiliser un post traitement (ou pas) [défaut=oui]
+```sh
+-p {0|1}
+```
+Choisir l'espace de couleur utilisé par l'algorithme SOM [défaut=RGB]:
+```sh
+{HSV|HSL|HSVRGB|HSVL}
+```
+### Capture d'écrans
+![Somimg screenshot 1](https://i.imgur.com/vWKZL7B.png)
+![Somimg screenshot 2](https://imgur.com/XPpe26q.png)
+![Somimg screenshot 3](https://imgur.com/4qvb1Vs)
 
-Test avec des images:
+## License
 
-```
-make
-$ test/testDraw.sh [Numéro du l'image (draw?.png)]
-```
+Le projet est sous licence gpl-3.0 - voir le fichier [LICENSE](LICENSE) pour plus de détails.
