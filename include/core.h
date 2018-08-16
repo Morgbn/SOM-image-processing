@@ -7,10 +7,7 @@
 #include "include/display.h"
 #include "include/mainwindow.h"
 
-#define NOGRID  01
 extern int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL, POST_PROCESS;
-
-#define HBIN 0 // h binaire ?
 
 /**
  * Récupérer les vecteurs de caractéristiques dans un ficher
@@ -57,10 +54,9 @@ void decreaseNhdSize(float * NhdSize, int N0, int t, int T);
  * Fonction de voisinage
  * @param  dist    ||j-j*||
  * @param  a       coef d'apprentissage
- * @param  NhdSize taille du voisinage actif
  * @return         coef
  */
-float h(float dist, float a, int NhdSize);
+float h(float dist, float a);
 
 /**
  * Recherche l'index du bmu
