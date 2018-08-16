@@ -41,8 +41,10 @@ Choisir l'espace de couleur utilisé par l'algorithme SOM [défaut=RGB]:
 ```
 ### Capture d'écrans
 ![Somimg screenshot 1](https://i.imgur.com/vWKZL7B.png)
+
 ![Somimg screenshot 2](https://imgur.com/XPpe26q.png)
-![Somimg screenshot 3](https://imgur.com/4qvb1Vs)
+
+![Somimg screenshot 3](https://imgur.com/4qvb1Vs.png)
 
 ## License
 
