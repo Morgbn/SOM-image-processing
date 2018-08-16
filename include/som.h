@@ -1,3 +1,7 @@
+/** @file core.h
+    Fonction principale, appelle notamment functions de som.h et readpng.h
+*/
+
 #include <time.h>
 #include "include/core.h"
 #include "include/display.h"

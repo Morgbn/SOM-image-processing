@@ -1,5 +1,8 @@
 #ifndef READPNG_INCLUDED
 #define READPNG_INCLUDED
+/** @file readpng.h
+    Fonctions de lecture/écriture et modifications d'image PNG
+*/
 
 #include <stdlib.h>
 #include <stdio.h>

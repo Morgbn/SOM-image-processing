@@ -1,5 +1,8 @@
 #ifndef RANDOMIZE_INCLUDED
 #define RANDOMIZE_INCLUDED
+/** @file randomize.h
+    Fonctions liées à la génération aléatoire
+*/
 
 #include <stdlib.h>
 

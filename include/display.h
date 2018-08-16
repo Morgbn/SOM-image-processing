@@ -1,5 +1,8 @@
 #ifndef DISPLAY_INCLUDED
 #define DISPLAY_INCLUDED
+/** @file display.h
+    Fonctions liées à l'affichage de vecteurs
+*/
 
 #include "include/utilities.h"
 

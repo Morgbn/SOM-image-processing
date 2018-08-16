@@ -1,5 +1,8 @@
 #ifndef CORE_INCLUDED
 #define CORE_INCLUDED
+/** @file som .h
+    SOM algorithme et ses fonctions
+*/
 
 #include "include/utilities.h"
 #include "include/randomize.h"

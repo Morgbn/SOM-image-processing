@@ -1,5 +1,8 @@
 #ifndef UTILITIES_INCLUDED
 #define UTILITIES_INCLUDED
+/** @file utilities.h
+    Fonctions utiles au reste de l'application
+*/
 
 #include <math.h>
 #include <stdlib.h>
