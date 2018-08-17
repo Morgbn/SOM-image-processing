@@ -5,7 +5,7 @@
 */
 
 #include <time.h>
-#include "include/core.h"
+#include "include/som.h"
 #include "include/display.h"
 #include "include/randomize.h"
 #include "include/utilities.h"

@@ -1,5 +1,5 @@
 #include "include/mainwindow.h"
-#include "include/som.h"
+#include "include/core.h"
 #include <QApplication>
 
 int MY_HSV, MY_HSL, MY_HSVRGB, MY_HSVL, makeTransparent, nw, postProcess;

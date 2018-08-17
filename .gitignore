@@ -4,6 +4,7 @@ Makefile
 interface.pro.user
 .qmake.stash
 runner
+somimg
 
 # Ignore the build and lib dirs
 build

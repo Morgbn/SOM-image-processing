@@ -1,4 +1,4 @@
-#include "include/som.h"
+#include "include/core.h"
 
 int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressBar, int verbose) {
   srand(time(NULL)); // initialise rand

@@ -1,4 +1,4 @@
-#include "include/core.h"
+#include "include/som.h"
 
 float ** getPoints(png_bytep * rowImg, int * lenx, int *nx, int width, int height) {
   *nx = width * height;
