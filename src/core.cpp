@@ -76,7 +76,7 @@ int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressB
 
   if (postProcess) { // enlève les petites zones / bruits
     int i = 0;
-    progressBar->setMaximum(width*height);
+    if (progressBar) progressBar->setMaximum(width*height);
     medianFilter(rowImg, width, height, 11, progressBar, &i);
   }
 
