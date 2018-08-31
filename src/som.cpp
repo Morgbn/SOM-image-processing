@@ -89,7 +89,9 @@ float ** som(float ** allx, int lenx, int nx, int nw, QProgressBar *progressBar,
 }
 
 void decreaseA(float * a, float a0, int t, int T) {
-  *a = a0 * exp( -(double)t / T);
+  // *a = a0 * exp( -(double)t / T);
+  *a = a0 * (1.0 - (double)t / T);
+  // float C = T/100; *a = C * (a0 / (C + t));
 }
 
 void decreaseNhdSize(float * NhdSize, int Nit, int t, int T) {
