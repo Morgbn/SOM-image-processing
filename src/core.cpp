@@ -81,7 +81,7 @@ int editImg(const char * fin, const char * fout, int nw, QProgressBar *progressB
   }
 
   if (makeTransparent) {
-    png_bytep firstPx = &(rowImg[0][width/2]); // estime que milieu haut = arriére plan
+    png_bytep firstPx = &(rowImg[0][width/2 * 4]); // estime que milieu haut = arriére plan
     for (int y = 0; y < height; y++) {
       png_bytep row = rowImg[y];
       png_bytep cpyRow = cpyImg[y];
